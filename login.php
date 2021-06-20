@@ -5,6 +5,10 @@ header("Access-Control-Allow-Methods: POST");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
+require_once __DIR__ . '/vendor/autoload.php';
+
+use Gregwar\Captcha\CaptchaBuilder;
+
 function msg($success, $status, $message, $extra = [])
 {
     return array_merge([
@@ -23,6 +27,9 @@ $conn = $db_connection->dbConnection();
 $data = json_decode(file_get_contents("php://input"));
 $returnData = [];
 
+$builder = new CaptchaBuilder;
+$builder->build();
+
 // IF REQUEST METHOD IS NOT EQUAL TO POST
 if ($_SERVER["REQUEST_METHOD"] != "POST") :
     $returnData = msg(0, 404, 'Page Not Found!');
@@ -31,17 +38,20 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") :
 elseif (
     !isset($data->username)
     || !isset($data->password)
+    || !isset($data->captcha)
     || empty(trim($data->username))
     || empty(trim($data->password))
+    || empty(trim($data->captcha))
 ) :
 
-    $fields = ['fields' => ['username', 'password']];
+    $fields = ['fields' => ['username', 'password', 'captcha']];
     $returnData = msg(0, 422, 'Please Fill in all Required Fields!', $fields);
 
 // IF THERE ARE NO EMPTY FIELDS THEN-
 else :
     $username = trim($data->username);
     $password = trim($data->password);
+    $captcha = trim($data->captcha);
 
     // CHECKING THE EMAIL FORMAT (IF INVALID FORMAT)
     // if (!filter_var($email, FILTER_VALIDATE_EMAIL)) :
@@ -50,6 +60,10 @@ else :
     // IF PASSWORD IS LESS THAN 8 THE SHOW THE ERROR
     if (strlen($password) < 8) :
         $returnData = msg(0, 422, 'Your password must be at least 8 characters long!');
+
+    // IF Captcha is wrong
+    elseif (!$builder->testPhrase($captcha)) :
+        $returnData = msg(0, 422, 'Your captcha is invalid!');
 
     // THE USER IS ABLE TO PERFORM THE LOGIN ACTION
     else :
@@ -71,7 +85,7 @@ else :
 
                     $jwt = new JwtHandler();
                     $token = $jwt->_jwt_encode_data(
-                        'http://localhost/php_auth_api/',
+                        'http://localhost/saeed/',
                         array("user_id" => $row['id'])
                     );
 
