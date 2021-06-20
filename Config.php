@@ -5,7 +5,7 @@ interface Config
     const DB_NAME = 'test';
     const DB_USERNAME = 'root';
     const DB_PASSWORD = '';
-    const PAYLOAD = 'http://localhost/saeed/';
+    const PAYLOAD = 'http://localhost/';
     const SECRET = "this_is_my_secrect";
     const TIMEZONE = 'Asia/Tehran';
 }
