@@ -1,8 +1,10 @@
 <?php
+require_once __DIR__ . '/../Config.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Firebase\JWT\JWT;
-use Config;
+
+
 
 class JwtHandler
 {
