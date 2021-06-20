@@ -82,6 +82,14 @@ else :
                         array("user_id" => $row['id'])
                     );
 
+                    $insert_query = "INSERT INTO `access_tokens`(`user_id`,`text`,`created_at`) VALUES(:id,:token,:created_at)";
+                    $insert_stmt = $conn->prepare($insert_query);
+                    $insert_stmt->bindValue(':id', $row['id'], PDO::PARAM_INT);
+                    $insert_stmt->bindValue(':token', $token, PDO::PARAM_STR);
+                    $insert_stmt->bindValue(':token', password_hash($token, PASSWORD_DEFAULT), PDO::PARAM_STR);
+                    $insert_stmt->bindValue(':created_at', date('Y-m-d H:i:s'), PDO::PARAM_STR);
+                    $insert_stmt->execute();
+
                     $returnData = [
                         'success' => 1,
                         'message' => 'You have successfully logged in.',

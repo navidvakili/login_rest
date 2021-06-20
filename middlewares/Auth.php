@@ -22,7 +22,18 @@ class Auth extends JwtHandler
 
         if (isset($data['auth']) && isset($data['data']->user_id) && $data['auth']) :
             $user = $this->fetchUser($data['data']->user_id);
-            return $user;
+
+            $fetch_user_by_id = "SELECT `user_id` FROM `access_tokens` WHERE `user_id`=:id";
+            $query_stmt = $this->db->prepare($fetch_user_by_id);
+            $query_stmt->bindValue(':id', $data['data']->user_id, PDO::PARAM_INT);
+            $query_stmt->execute();
+
+            if ($query_stmt->rowCount()) :
+                return $user;
+            else :
+                return false;
+            endif;
+
 
         else :
             return false;
@@ -51,6 +62,32 @@ class Auth extends JwtHandler
         } catch (PDOException $e) {
             return null;
         }
+    }
+
+    public function logout()
+    {
+        $data = $this->extract();
+        if ($data == null) :
+            return $data;
+        endif;
+
+        if (isset($data['auth']) && isset($data['data']->user_id) && $data['auth']) :
+            $user_id = $data['data']->user_id;
+            try {
+                $delete_access_user_by_id = "DELETE FROM `access_tokens` WHERE `user_id`=:id";
+                $query_stmt = $this->db->prepare($delete_access_user_by_id);
+                $query_stmt->bindValue(':id', $user_id, PDO::PARAM_INT);
+                $query_stmt->execute();
+
+                return Message::output(1, 200, 'You are logged out!!');
+            } catch (PDOException $e) {
+                return null;
+            }
+
+        else :
+            return null;
+
+        endif; // End of isset($this->token[1]) && !empty(trim($this->token[1]))
     }
 
     private function extract()
