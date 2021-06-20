@@ -1,10 +1,7 @@
 <?php
-require __DIR__ . '/../jwt/JWT.php';
-require __DIR__ . '/../jwt/ExpiredException.php';
-require __DIR__ . '/../jwt/SignatureInvalidException.php';
-require __DIR__ . '/../jwt/BeforeValidException.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
-use \Firebase\JWT\JWT;
+use Firebase\JWT\JWT;
 
 class JwtHandler
 {

@@ -5,8 +5,6 @@ header("Access-Control-Allow-Methods: POST");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-require_once __DIR__ . '/vendor/autoload.php';
-
 use Gregwar\Captcha\CaptchaBuilder;
 
 function msg($success, $status, $message, $extra = [])
@@ -62,8 +60,8 @@ else :
         $returnData = msg(0, 422, 'Your password must be at least 8 characters long!');
 
     // IF Captcha is wrong
-    elseif (!$builder->testPhrase($captcha)) :
-        $returnData = msg(0, 422, 'Your captcha is invalid!');
+    //elseif (!$builder->testPhrase($captcha)) :
+    //   $returnData = msg(0, 422, 'Your captcha is invalid!');
 
     // THE USER IS ABLE TO PERFORM THE LOGIN ACTION
     else :

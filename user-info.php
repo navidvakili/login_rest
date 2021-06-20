@@ -13,14 +13,17 @@ $db_connection = new Database();
 $conn = $db_connection->dbConnection();
 $auth = new Auth($conn, $allHeaders);
 
-$returnData = [
-    "success" => 0,
-    "status" => 401,
-    "message" => "Unauthorized"
-];
-
-if ($auth->isAuth()) {
+// IF REQUEST METHOD IS NOT EQUAL TO GET
+if ($_SERVER["REQUEST_METHOD"] != "GET") :
+    $returnData = msg(0, 404, 'Page Not Found!');
+elseif ($auth->isAuth()) :
     $returnData = $auth->isAuth();
-}
+else :
+    $returnData = [
+        "success" => 0,
+        "status" => 401,
+        "message" => "Unauthorized"
+    ];
+endif;
 
 echo json_encode($returnData);
