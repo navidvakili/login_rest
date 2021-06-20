@@ -15,30 +15,19 @@ class Auth extends JwtHandler
 
     public function isAuth()
     {
-        if (array_key_exists('Authorization', $this->headers) && !empty(trim($this->headers['Authorization']))) :
-            $this->token = explode(" ", trim($this->headers['Authorization']));
-            if (isset($this->token[1]) && !empty(trim($this->token[1]))) :
+        $data = $this->extract();
+        if ($data == null) :
+            return false;
+        endif;
 
-                $data = $this->_jwt_decode_data($this->token[1]);
-
-                if (isset($data['auth']) && isset($data['data']->user_id) && $data['auth']) :
-                    $user = $this->fetchUser($data['data']->user_id);
-                    return $user;
-
-                else :
-                    return null;
-
-                endif; // End of isset($this->token[1]) && !empty(trim($this->token[1]))
-
-            else :
-                return null;
-
-            endif; // End of isset($this->token[1]) && !empty(trim($this->token[1]))
+        if (isset($data['auth']) && isset($data['data']->user_id) && $data['auth']) :
+            $user = $this->fetchUser($data['data']->user_id);
+            return $user;
 
         else :
-            return null;
+            return false;
 
-        endif;
+        endif; // End of isset($this->token[1]) && !empty(trim($this->token[1]))
     }
 
     protected function fetchUser($user_id)
@@ -62,5 +51,25 @@ class Auth extends JwtHandler
         } catch (PDOException $e) {
             return null;
         }
+    }
+
+    private function extract()
+    {
+        if (array_key_exists('Authorization', $this->headers) && !empty(trim($this->headers['Authorization']))) :
+            $this->token = explode(" ", trim($this->headers['Authorization']));
+            if (isset($this->token[1]) && !empty(trim($this->token[1]))) :
+
+                $data = $this->_jwt_decode_data($this->token[1]);
+
+                return $data;
+            else :
+                return false;
+
+            endif; // End of isset($this->token[1]) && !empty(trim($this->token[1]))
+
+        else :
+            return false;
+
+        endif;
     }
 }
