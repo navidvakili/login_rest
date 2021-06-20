@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Firebase\JWT\JWT;
+use Config;
 
 class JwtHandler
 {
@@ -14,14 +15,14 @@ class JwtHandler
     public function __construct()
     {
         // set your default time-zone
-        date_default_timezone_set('Asia/Kolkata');
+        date_default_timezone_set(Config::TIMEZONE);
         $this->issuedAt = time();
 
         // Token Validity (3600 second = 1hr)
         $this->expire = $this->issuedAt + 3600;
 
         // Set your secret or signature
-        $this->jwt_secrect = "this_is_my_secrect";
+        $this->jwt_secrect = Config::SECRET;
     }
 
     // ENCODING THE TOKEN

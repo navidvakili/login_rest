@@ -84,7 +84,7 @@ else :
 
                     $jwt = new JwtHandler();
                     $token = $jwt->_jwt_encode_data(
-                        'http://localhost/saeed/',
+                        Config::PAYLOAD,
                         array("user_id" => $row['id'])
                     );
 
