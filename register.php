@@ -5,17 +5,10 @@ header("Access-Control-Allow-Methods: POST");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-function msg($success, $status, $message, $extra = [])
-{
-    return array_merge([
-        'success' => $success,
-        'status' => $status,
-        'message' => $message
-    ], $extra);
-}
-
 // INCLUDING DATABASE AND MAKING OBJECT
 require __DIR__ . '/classes/Database.php';
+require_once __DIR__ . '/classes/Message.php';
+
 $db_connection = new Database();
 $conn = $db_connection->dbConnection();
 
@@ -25,7 +18,7 @@ $returnData = [];
 
 // IF REQUEST METHOD IS NOT POST
 if ($_SERVER["REQUEST_METHOD"] != "POST") :
-    $returnData = msg(0, 404, 'Page Not Found!');
+    $returnData = Message::output(0, 404, 'Page Not Found!');
 
 // CHECKING EMPTY FIELDS
 elseif (
@@ -38,7 +31,7 @@ elseif (
 ) :
 
     $fields = ['fields' => ['name', 'username', 'password']];
-    $returnData = msg(0, 422, 'Please Fill in all Required Fields!', $fields);
+    $returnData = Message::output(0, 422, 'Please Fill in all Required Fields!', $fields);
 
 // IF THERE ARE NO EMPTY FIELDS THEN-
 else :
@@ -48,13 +41,13 @@ else :
     $password = trim($data->password);
 
     // if (!filter_var($email, FILTER_VALIDATE_EMAIL)) :
-    //     $returnData = msg(0, 422, 'Invalid Email Address!');
+    //     $returnData = Message::output(0, 422, 'Invalid Email Address!');
 
     if (strlen($password) < 8) :
-        $returnData = msg(0, 422, 'Your password must be at least 8 characters long!');
+        $returnData = Message::output(0, 422, 'Your password must be at least 8 characters long!');
 
     elseif (strlen($name) < 3) :
-        $returnData = msg(0, 422, 'Your name must be at least 3 characters long!');
+        $returnData = Message::output(0, 422, 'Your name must be at least 3 characters long!');
 
     else :
         try {
@@ -65,7 +58,7 @@ else :
             $check_username_stmt->execute();
 
             if ($check_username_stmt->rowCount()) :
-                $returnData = msg(0, 422, 'This E-mail already in use!');
+                $returnData = Message::output(0, 422, 'This E-mail already in use!');
 
             else :
                 $insert_query = "INSERT INTO `users`(`name`,`username`,`password`) VALUES(:name,:username,:password)";
@@ -79,11 +72,11 @@ else :
 
                 $insert_stmt->execute();
 
-                $returnData = msg(1, 201, 'You have successfully registered.');
+                $returnData = Message::output(1, 201, 'You have successfully registered.');
 
             endif;
         } catch (PDOException $e) {
-            $returnData = msg(0, 500, $e->getMessage());
+            $returnData = Message::output(0, 500, $e->getMessage());
         }
     endif;
 

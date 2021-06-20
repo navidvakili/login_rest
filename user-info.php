@@ -7,6 +7,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 require __DIR__ . '/classes/Database.php';
 require __DIR__ . '/middlewares/Auth.php';
+require_once __DIR__ . '/classes/Message.php';
 
 $allHeaders = getallheaders();
 $db_connection = new Database();
@@ -15,7 +16,7 @@ $auth = new Auth($conn, $allHeaders);
 
 // IF REQUEST METHOD IS NOT EQUAL TO GET
 if ($_SERVER["REQUEST_METHOD"] != "GET") :
-    $returnData = msg(0, 404, 'Page Not Found!');
+    $returnData = Message::output(0, 404, 'Page Not Found!');
 elseif ($auth->isAuth()) :
     $returnData = $auth->isAuth();
 else :
