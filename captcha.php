@@ -1,4 +1,5 @@
 <?php
+session_start();
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: access");
 header("Access-Control-Allow-Methods: POST");
@@ -32,7 +33,6 @@ else :
 
     $returnData = [
         'captcha' => $builder->inline(),
-        'show' => $builder->getPhrase()
     ];
 endif;
 

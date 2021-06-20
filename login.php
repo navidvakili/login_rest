@@ -1,4 +1,5 @@
 <?php
+session_start();
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: access");
 header("Access-Control-Allow-Methods: POST");
@@ -60,8 +61,8 @@ else :
         $returnData = msg(0, 422, 'Your password must be at least 8 characters long!');
 
     // IF Captcha is wrong
-    //elseif (!$builder->testPhrase($captcha)) :
-    //   $returnData = msg(0, 422, 'Your captcha is invalid!');
+    elseif (!isset($_SESSION['phrase'])  || $captcha != $_SESSION['phrase']) :
+        $returnData = msg(0, 422, 'Your captcha is invalid!');
 
     // THE USER IS ABLE TO PERFORM THE LOGIN ACTION
     else :
