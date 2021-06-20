@@ -1,12 +1,13 @@
 <?php
+require_once __DIR__ . '/../Config.php';
 class Database
 {
 
     // CHANGE THE DB INFO ACCORDING TO YOUR DATABASE
-    private $db_host = 'localhost';
-    private $db_name = 'test';
-    private $db_username = 'root';
-    private $db_password = '';
+    private $db_host = Config::DB_HOST;
+    private $db_name = Config::DB_NAME;
+    private $db_username = Config::DB_USERNAME;
+    private $db_password = Config::DB_PASSWORD;
 
     public function dbConnection()
     {
