@@ -20,11 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] != "GET") :
 elseif ($auth->isAuth()) :
     $returnData = $auth->isAuth();
 else :
-    $returnData = [
-        "success" => 0,
-        "status" => 401,
-        "message" => "Unauthorized"
-    ];
+    $returnData = Message::output(0, 401, "Unauthorized");
 endif;
 
 echo json_encode($returnData);
