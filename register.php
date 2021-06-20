@@ -58,7 +58,7 @@ else :
             $check_username_stmt->execute();
 
             if ($check_username_stmt->rowCount()) :
-                $returnData = Message::output(0, 422, 'This E-mail already in use!');
+                $returnData = Message::output(0, 422, 'This Username already in use!');
 
             else :
                 $insert_query = "INSERT INTO `users`(`name`,`username`,`password`) VALUES(:name,:username,:password)";
